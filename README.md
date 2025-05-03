@@ -36,7 +36,7 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 |-------------|--------------|
 | SDA (SS)    | GPIO21       |
 | SCK         | GPIO18       |
-| MOSI        | GPIO23       |
+| MOSI        | GPIO23/GPIO11       |
 | MISO        | GPIO19       |
 | RST         | GPIO22       |
 | GND         | GND          |
