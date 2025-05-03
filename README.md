@@ -38,6 +38,7 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 | SCK         | GPIO18       |
 | MOSI        | GPIO23/GPIO11       |
 | MISO        | GPIO19       |
+| IRQ         | GPIO5        |
 | RST         | GPIO22       |
 | GND         | GND          |
 | VCC         | 3.3V         |
