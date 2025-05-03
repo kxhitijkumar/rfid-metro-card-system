@@ -17,19 +17,6 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 
 ---
 
-##  System Architecture
-
-[RFID + ESP32-S3]
-|
-Tap Card (UID)
-|
-v
-Check & Deduct via -> Supabase (REST API)
-|
-Log tap to ---> Google Sheets (Webhook)
-
----
-
 ##  Features
 
 - Passive RFID card authentication using MFRC522
