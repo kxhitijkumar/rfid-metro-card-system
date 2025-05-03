@@ -39,7 +39,7 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 | MOSI        | GPIO23/GPIO11       |
 | MISO        | GPIO19       |
 | IRQ         | GPIO5        |
-| RST         | GPIO22       |
+| RST         | GPIO22/GPIO17       |
 | GND         | GND          |
 | VCC         | 3.3V         |
 
