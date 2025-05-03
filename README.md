@@ -17,6 +17,28 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 
 ---
 
+##  System Architecture
+
+[RFID + ESP32-S3]
+|
+Tap Card (UID)
+|
+v
+Check & Deduct via -> Supabase (REST API)
+|
+Log tap to ---> Google Sheets (Webhook)
+
+---
+
+##  Features
+
+- Passive RFID card authentication using MFRC522
+- ESP32-S3 reads UID and deducts fare (₹10 per tap)
+- Checks card balance from Supabase (cloud database)
+- Updates balance via REST PATCH
+- Logs each tap to Google Sheets with timestamp and status
+
+
 ##  Hardware Requirements
 
 | Component          | Specification / Notes            |
@@ -73,6 +95,17 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 - Matches the UID with the virtual card database
 - Deducts fare if balance is sufficient
 - Displays result on Serial Monitor
+
+##  Supabase Configuration
+
+1. [Create Supabase Project](https://supabase.io)
+2. Create `cards` table:
+
+```sql
+CREATE TABLE cards (
+  uid TEXT PRIMARY KEY,
+  balance INTEGER
+);
 
 ```cpp
 Example Output:
