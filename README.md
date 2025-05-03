@@ -1,10 +1,10 @@
-# 🚇 Passive RFID-Based Metro Card System using ESP32-S3
+#  Passive RFID-Based Metro Card System using ESP32-S3
 
 This project demonstrates a **contactless metro card system** using an **ESP32-S3 microcontroller** and an **MFRC522 passive RFID reader**. The system allows users to tap an RFID card, deducts fare from their virtual balance, and logs the transaction to the serial monitor.
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 RFID technology is widely used in transportation systems for smart cards and ticketing. This prototype simulates such a system:
 
@@ -17,7 +17,7 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 
 ---
 
-## 🧰 Hardware Requirements
+##  Hardware Requirements
 
 | Component          | Specification / Notes            |
 |-------------------|----------------------------------|
@@ -30,7 +30,7 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 
 ---
 
-## 🔌 Wiring (ESP32-S3 to MFRC522)
+##  Wiring (ESP32-S3 to MFRC522)
 
 | MFRC522 Pin | ESP32-S3 Pin |
 |-------------|--------------|
@@ -42,11 +42,11 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 | GND         | GND          |
 | VCC         | 3.3V         |
 
-> ⚠️ Note: MFRC522 works on 3.3V logic; don't use 5V unless level-shifted.
+>  Note: MFRC522 works on 3.3V logic; don't use 5V unless level-shifted.
 
 ---
 
-## 🔧 Arduino IDE Setup
+##  Arduino IDE Setup
 
 1. **Install Board Manager:**
    - Go to `File > Preferences`
@@ -64,7 +64,7 @@ This version is local-only, but easily extensible with Firebase, Google Sheets, 
 
 ---
 
-## 💻 Code Functionality
+##  Code Functionality
 
 - Initializes SPI and RFID
 - Waits for a card to be tapped
