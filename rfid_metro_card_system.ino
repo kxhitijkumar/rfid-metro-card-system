@@ -1,58 +1,119 @@
-#include <SPI.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <ArduinoJson.h>
 #include <MFRC522.h>
+#include <SPI.h>
 
-#define RST_PIN 22  // Adjust as needed
-#define SS_PIN  21  // Adjust as needed
+#define SS_PIN  21
+#define RST_PIN 17
+MFRC522 rfid(SS_PIN, RST_PIN);
 
-MFRC522 mfrc522(SS_PIN, RST_PIN);
+// Wi-Fi creds
+const char* ssid = "kxhitij";
+const char* password = "kxhitijkumar";
 
-// Simulated metro card balance database
-struct Card {
-  String uid;
-  int balance;
-};
+// Supabase
+const char* supabase_url = "https://wdjqxyrtcxzmtceuhoyy.supabase.co";
+const char* supabase_apikey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkanF4eXJ0Y3h6bXRjZXVob3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyODM1NTIsImV4cCI6MjA2MTg1OTU1Mn0.gO_qzxzeUPeT_yBGvY9b3_VVndMc_t5ZcaVwkFjixQE";
 
-Card cards[] = {
-  {"12345678", 100},
-  {"A1B2C3D4", 50}
-};
-const int NUM_CARDS = sizeof(cards) / sizeof(cards[0]);
+// Google Sheets Webhook
+const char* sheets_webhook_url = "https://script.google.com/macros/s/AKfycbxoVrVoNUFyGFFheiMGdtXhGrcpJvbfDPeqZQUh0r0KqTo8TX_2-Sb9sZ_fXhTgjtpA/exec";
 
 void setup() {
   Serial.begin(115200);
-  SPI.begin();          
-  mfrc522.PCD_Init();   
-  Serial.println("Metro RFID System Initialized");
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) delay(1000);
+
+  SPI.begin();
+  rfid.PCD_Init();
+  Serial.println("Connecting to WiFi...");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+  Serial.println("Connected!");
 }
 
 void loop() {
-  if (!mfrc522.PICC_IsNewCardPresent()) return;
-  if (!mfrc522.PICC_ReadCardSerial()) return;
+
+  Serial.println("Waiting for RFID...");
+  delay(1000);
+  if (!rfid.PICC_IsNewCardPresent() || !rfid.PICC_ReadCardSerial()) return;
 
   String uid = "";
-  for (byte i = 0; i < mfrc522.uid.size; i++) {
-    uid += String(mfrc522.uid.uidByte[i], HEX);
-  }
+  for (byte i = 0; i < rfid.uid.size; i++) uid += String(rfid.uid.uidByte[i], HEX);
   uid.toUpperCase();
-  Serial.print("Card detected: ");
-  Serial.println(uid);
 
-  processCard(uid);
-  mfrc522.PICC_HaltA();
+  Serial.println("UID: " + uid);
+
+  if (handleCardTap(uid)) {
+    Serial.println("Access Granted");
+  } else {
+    Serial.println("Access Denied or Insufficient Balance");
+  }
+
+  rfid.PICC_HaltA();
+  delay(1000);
 }
 
-void processCard(String uid) {
-  for (int i = 0; i < NUM_CARDS; i++) {
-    if (cards[i].uid.equalsIgnoreCase(uid)) {
-      if (cards[i].balance >= 10) {
-        cards[i].balance -= 10;
-        Serial.print("Access Granted. Remaining Balance: ₹");
-        Serial.println(cards[i].balance);
-      } else {
-        Serial.println("Access Denied. Insufficient Balance.");
-      }
-      return;
-    }
+bool handleCardTap(String uid) {
+  HTTPClient http;
+
+  // Step 1: GET current balance
+  String url = String(supabase_url) + "?uid=eq." + uid;
+  http.begin(url);
+  http.addHeader("apikey", supabase_apikey);
+  http.addHeader("Authorization", supabase_apikey);
+
+  int httpCode = http.GET();
+  if (httpCode != 200) return false;
+
+  String response = http.getString();
+  StaticJsonDocument<200> doc;
+  deserializeJson(doc, response);
+  if (doc.size() == 0) return false;
+
+  int balance = doc[0]["balance"];
+  Serial.println("Current Balance: " + String(balance));
+
+  if (balance < 10) {
+    logToSheets(uid, "Denied", balance);
+    return false;
   }
-  Serial.println("Access Denied. Card not registered.");
+
+  // Step 2: PATCH to deduct fare
+  int newBalance = balance - 10;
+  String patchUrl = String(supabase_url) + "?uid=eq." + uid;
+
+  http.begin(patchUrl);
+  http.addHeader("apikey", supabase_apikey);
+  http.addHeader("Authorization", supabase_apikey);
+  http.addHeader("Content-Type", "application/json");
+
+  String payload = "{\"balance\": " + String(newBalance) + "}";
+  int patchCode = http.PATCH(payload);
+
+  if (patchCode == 200) {
+    logToSheets(uid, "Success", newBalance);
+    return true;
+  }
+
+  logToSheets(uid, "Error", balance);
+  return false;
+}
+
+void logToSheets(String uid, String status, int balance) {
+  HTTPClient http;
+  http.begin(sheets_webhook_url);
+  http.addHeader("Content-Type", "application/json");
+
+  StaticJsonDocument<200> doc;
+  doc["uid"] = uid;
+  doc["status"] = status;
+  doc["balance"] = balance;
+
+  String output;
+  serializeJson(doc, output);
+  http.POST(output);
+  http.end();
 }

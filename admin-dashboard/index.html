@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RFID Metro Admin Panel</title>
+  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>RFID Metro Card Admin Dashboard</h1>
+
+  <section>
+    <h2>All Cards</h2>
+    <table id="cardTable" border="1">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>Balance</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Add / Update Card</h2>
+    <form id="cardForm">
+      <input type="text" id="uid" placeholder="UID" required />
+      <input type="number" id="balance" placeholder="Balance" required />
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+</body>
+</html>
