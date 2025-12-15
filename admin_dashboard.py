@@ -5,8 +5,8 @@ import requests
 import pandas as pd
 
 # Supabase configuration
-SUPABASE_URL = "https://wdjqxyrtcxzmtceuhoyy.supabase.co/rest/v1/cards"
-SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkanF4eXJ0Y3h6bXRjZXVob3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyODM1NTIsImV4cCI6MjA2MTg1OTU1Mn0.gO_qzxzeUPeT_yBGvY9b3_VVndMc_t5ZcaVwkFjixQE"
+SUPABASE_URL = "URL"
+SUPABASE_API_KEY = "KEY"
 HEADERS = {
     "apikey": SUPABASE_API_KEY,
     "Authorization": f"Bearer {SUPABASE_API_KEY}",
