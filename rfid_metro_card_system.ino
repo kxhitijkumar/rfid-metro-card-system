@@ -13,11 +13,11 @@ const char* ssid = "kxhitij";
 const char* password = "kxhitijkumar";
 
 // Supabase
-const char* supabase_url = "https://wdjqxyrtcxzmtceuhoyy.supabase.co";
-const char* supabase_apikey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkanF4eXJ0Y3h6bXRjZXVob3l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyODM1NTIsImV4cCI6MjA2MTg1OTU1Mn0.gO_qzxzeUPeT_yBGvY9b3_VVndMc_t5ZcaVwkFjixQE";
+const char* supabase_url = "URL";
+const char* supabase_apikey = "KEY";
 
 // Google Sheets Webhook
-const char* sheets_webhook_url = "https://script.google.com/macros/s/AKfycbxoVrVoNUFyGFFheiMGdtXhGrcpJvbfDPeqZQUh0r0KqTo8TX_2-Sb9sZ_fXhTgjtpA/exec";
+const char* sheets_webhook_url = "SHEETS_URL";
 
 void setup() {
   Serial.begin(115200);
